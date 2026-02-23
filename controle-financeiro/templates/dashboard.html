@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Bem-vindo, {{ user.email }}</h1>
+
+    <h2>Adicionar lançamento</h2>
+    <form method="POST" action="/add">
+        <input type="text" name="description" placeholder="Descrição" required>
+        <input type="number" step="0.01" name="amount" placeholder="Valor" required>
+
+        <select name="type">
+            <option value="ganho">Ganho</option>
+            <option value="gasto">Gasto</option>
+        </select>
+
+        <button type="submit">Adicionar</button>
+    </form>
+
+    <h2>Seus lançamentos</h2>
+    <ul>
+        {% for t in transactions %}
+            <li>
+                {{ t.description }} - R$ {{ t.amount }} ({{ t.type }})
+                <a href="/delete/{{ t.id }}">Excluir</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <br>
+    <a href="/logout">Sair</a>
+</body>
+</html>

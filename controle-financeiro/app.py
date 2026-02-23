@@ -17,6 +17,51 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
 
+class Transaction(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String(120), nullable=False)
+    amount = db.Column(db.Float, nullable=False)
+    type = db.Column(db.String(10), nullable=False)  # "ganho" ou "gasto"
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+
+    from flask import flash
+
+@app.route("/add", methods=["POST"])
+@login_required
+def add_transaction():
+    description = request.form["description"]
+    amount = float(request.form["amount"])
+    type_ = request.form["type"]
+
+    t = Transaction(
+        description=description,
+        amount=amount,
+        type=type_,
+        user_id=current_user.id
+    )
+    db.session.add(t)
+    db.session.commit()
+
+    return redirect(url_for("dashboard"))
+
+@app.route("/delete/<int:id>")
+@login_required
+def delete_transaction(id):
+    t = Transaction.query.get_or_404(id)
+
+    if t.user_id != current_user.id:
+        return "Acesso negado", 403
+
+    db.session.delete(t)
+    db.session.commit()
+    return redirect(url_for("dashboard"))
+
+@app.route("/dashboard")
+@login_required
+def dashboard():
+    transactions = Transaction.query.filter_by(user_id=current_user.id).all()
+    return render_template("dashboard.html", user=current_user, transactions=transactions)
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
