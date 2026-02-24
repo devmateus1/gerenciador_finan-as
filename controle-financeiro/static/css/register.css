@@ -1,0 +1,368 @@
+/* ==========================================
+   FinControl - Cadastro (Register) CSS
+   ========================================== */
+
+/* Reset e base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', 'Inter', Arial, sans-serif;
+  background-color: #0f1b2d;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+}
+
+/* Container principal */
+.register-container {
+  background-color: #1a2742;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.3),
+    0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+/* ==========================================
+   Logo
+   ========================================== */
+.register-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.register-logo-icon {
+  width: 40px;
+  height: 40px;
+  background-color: #10b981;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.register-logo-icon svg {
+  width: 22px;
+  height: 22px;
+  color: #fff;
+}
+
+.register-logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f0f4f8;
+  letter-spacing: -0.5px;
+}
+
+.register-logo-text span {
+  color: #10b981;
+}
+
+/* ==========================================
+   Titulo e subtitulo
+   ========================================== */
+h2 {
+  text-align: center;
+  color: #f0f4f8;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  letter-spacing: -0.3px;
+}
+
+.register-subtitle {
+  text-align: center;
+  color: #8899aa;
+  font-size: 0.9rem;
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+
+/* ==========================================
+   Formulario
+   ========================================== */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Grupo de campo */
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-group label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Wrapper de input com icone */
+.input-wrapper {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: #4a5e75;
+  pointer-events: none;
+}
+
+/* Inputs */
+.register-form input[type="email"],
+.register-form input[type="password"],
+.register-form input[type="text"] {
+  width: 100%;
+  padding: 14px 16px 14px 44px;
+  background-color: #0f1b2d;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: #f0f4f8;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+.register-form input::placeholder {
+  color: #4a5e75;
+}
+
+.register-form input:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+/* ==========================================
+   Campo de senha com toggle
+   ========================================== */
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  padding-right: 48px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #4a5e75;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.toggle-password:hover {
+  color: #10b981;
+}
+
+.toggle-password svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ==========================================
+   Botao principal
+   ========================================== */
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background-color: #10b981;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  margin-top: 6px;
+  letter-spacing: 0.2px;
+  font-family: inherit;
+}
+
+.btn-submit:hover {
+  background-color: #059669;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn-submit:active {
+  transform: scale(0.98);
+}
+
+/* ==========================================
+   Divisor "ou"
+   ========================================== */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.divider span {
+  font-size: 0.8rem;
+  color: #4a5e75;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+
+/* ==========================================
+   Botao social (Google)
+   ========================================== */
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: #c0ccd8;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  font-family: inherit;
+}
+
+.btn-google:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.btn-google svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ==========================================
+   Nota de registro / Link para login
+   ========================================== */
+.register-note {
+  text-align: center;
+  color: #8899aa;
+  font-size: 0.9rem;
+  margin-top: 28px;
+}
+
+.register-note a {
+  color: #10b981;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.register-note a:hover {
+  color: #34d399;
+  text-decoration: underline;
+}
+
+/* ==========================================
+   Mensagens flash (erro/sucesso)
+   ========================================== */
+.flash-messages {
+  margin-bottom: 20px;
+}
+
+.flash-message {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.flash-message.error {
+  background-color: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.flash-message.success {
+  background-color: rgba(16, 185, 129, 0.12);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+/* ==========================================
+   Footer de seguranca
+   ========================================== */
+.register-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 24px;
+}
+
+.register-footer svg {
+  width: 14px;
+  height: 14px;
+  color: #4a5e75;
+}
+
+.register-footer span {
+  font-size: 0.75rem;
+  color: #4a5e75;
+}
+
+/* ==========================================
+   Responsivo
+   ========================================== */
+@media (max-width: 480px) {
+  .register-container {
+    margin: 16px;
+    padding: 36px 24px;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+  }
+
+  .register-logo-text {
+    font-size: 1.3rem;
+  }
+}
