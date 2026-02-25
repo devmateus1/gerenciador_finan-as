@@ -66,8 +66,28 @@ def delete_transaction(id):
 def dashboard():
     """Exibe o painel de controle com as transações do usuário"""
     transactions = Transaction.query.filter_by(user_id=current_user.id).all()
-    return render_template("dashboard.html", user=current_user, transactions=transactions)
-
+    
+    # Calculate balance and totals
+    saldo = 0
+    total_ganhos = 0
+    total_gastos = 0
+    
+    for t in transactions:
+        if t.type == 'ganho':
+            total_ganhos += t.amount
+            saldo += t.amount
+        elif t.type == 'gasto':
+            total_gastos += t.amount
+            saldo -= t.amount
+    
+    return render_template(
+        "dashboard.html",
+        user=current_user,
+        transactions=transactions,
+        saldo=saldo,
+        total_ganhos=total_ganhos,
+        total_gastos=total_gastos
+    )
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
