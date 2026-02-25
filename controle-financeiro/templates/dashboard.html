@@ -2,35 +2,311 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinControl - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
 </head>
 <body>
-    <h1>Bem-vindo, {{ user.email }}</h1>
 
-    <h2>Adicionar lançamento</h2>
-    <form method="POST" action="/add">
-        <input type="text" name="description" placeholder="Descrição" required>
-        <input type="number" step="0.01" name="amount" placeholder="Valor" required>
+    <!-- Backdrop mobile -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
 
-        <select name="type">
-            <option value="ganho">Ganho</option>
-            <option value="gasto">Gasto</option>
-        </select>
+    <!-- ==========================================
+         Sidebar
+         ========================================== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="/" class="sidebar-logo">
+                <div class="sidebar-logo-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                </div>
+                <div class="sidebar-logo-text">Fin<span>Control</span></div>
+            </a>
+        </div>
 
-        <button type="submit">Adicionar</button>
-    </form>
+        <nav class="sidebar-nav">
+            <a href="/" class="nav-item active">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                Dashboard
+            </a>
+            <a href="#" class="nav-item">
+                <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Transacoes
+            </a>
+            <a href="#" class="nav-item">
+                <svg viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                Relatorios
+            </a>
+            <a href="#" class="nav-item">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                Configuracoes
+            </a>
+        </nav>
 
-    <h2>Seus lançamentos</h2>
-    <ul>
-        {% for t in transactions %}
-            <li>
-                {{ t.description }} - R$ {{ t.amount }} ({{ t.type }})
-                <a href="/delete/{{ t.id }}">Excluir</a>
-            </li>
-        {% endfor %}
-    </ul>
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <div class="user-avatar">
+                    {{ user.email[0] | upper }}
+                </div>
+                <div class="user-info">
+                    <div class="user-name">{{ user.email.split('@')[0] }}</div>
+                    <div class="user-email">{{ user.email }}</div>
+                </div>
+                <a href="/logout" class="btn-logout" title="Sair">
+                    <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                </a>
+            </div>
+        </div>
+    </aside>
 
-    <br>
-    <a href="/logout">Sair</a>
+    <!-- ==========================================
+         Conteudo principal
+         ========================================== -->
+    <main class="main-content">
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="flash-message {{ category }}">
+                {% if category == 'success' %}
+                <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                {% else %}
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                {% endif %}
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Header -->
+        <div class="main-header">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">
+                <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <div class="main-header-left">
+                <h1>Bem-vindo, {{ user.email.split('@')[0] }}</h1>
+                <p>Aqui esta o resumo das suas financas.</p>
+            </div>
+            <button class="btn-add" onclick="openModal()">
+                <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Novo lancamento
+            </button>
+        </div>
+
+        <!-- Cards de resumo -->
+        <div class="summary-cards">
+            <div class="summary-card">
+                <div class="card-header">
+                    <span class="card-label">Saldo total</span>
+                    <div class="card-icon balance">
+                        <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                    </div>
+                </div>
+                <div class="card-value {% if saldo >= 0 %}positive{% else %}negative{% endif %}">
+                    R$ {{ "%.2f" | format(saldo|default(0)) }}
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="card-header">
+                    <span class="card-label">Total de ganhos</span>
+                    <div class="card-icon income">
+                        <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                    </div>
+                </div>
+                <div class="card-value positive">
+                    R$ {{ "%.2f" | format(total_ganhos|default(0)) }}
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="card-header">
+                    <span class="card-label">Total de gastos</span>
+                    <div class="card-icon expense">
+                        <svg viewBox="0 0 24 24"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+                    </div>
+                </div>
+                <div class="card-value negative">
+                    R$ {{ "%.2f" | format(total_gastos|default(0)) }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela de lancamentos -->
+        <div class="transactions-section">
+            <div class="transactions-header">
+                <h2>Seus lancamentos</h2>
+                <span class="transactions-count">{{ transactions|length }} registros</span>
+            </div>
+
+            <div class="transactions-filters">
+                <button class="filter-btn active" onclick="filterTransactions('todos', this)">Todos</button>
+                <button class="filter-btn" onclick="filterTransactions('ganho', this)">Ganhos</button>
+                <button class="filter-btn" onclick="filterTransactions('gasto', this)">Gastos</button>
+            </div>
+
+            {% if transactions %}
+            <table class="transactions-table">
+                <thead>
+                    <tr>
+                        <th>Descricao</th>
+                        <th>Tipo</th>
+                        <th>Valor</th>
+                        <th>Acoes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in transactions %}
+                    <tr data-type="{{ t.type }}">
+                        <td>
+                            <div class="td-description">
+                                <div class="td-icon {{ t.type }}">
+                                    {% if t.type == 'ganho' %}
+                                    <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                                    {% else %}
+                                    <svg viewBox="0 0 24 24"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+                                    {% endif %}
+                                </div>
+                                <div class="td-text">
+                                    <strong>{{ t.description }}</strong>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="type-badge {{ t.type }}">{{ t.type }}</span>
+                        </td>
+                        <td>
+                            <span class="{% if t.type == 'ganho' %}amount-positive{% else %}amount-negative{% endif %}">
+                                {% if t.type == 'ganho' %}+{% else %}-{% endif %} R$ {{ "%.2f" | format(t.amount) }}
+                            </span>
+                        </td>
+                        <td class="td-actions">
+                            <a href="/delete/{{ t.id }}" class="btn-delete" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir este lancamento?')">
+                                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                </div>
+                <h3>Nenhum lancamento ainda</h3>
+                <p>Clique em "Novo lancamento" para comecar a registrar suas financas.</p>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <!-- ==========================================
+         Modal de novo lancamento
+         ========================================== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Novo lancamento</h2>
+                <button class="modal-close" onclick="closeModal()">
+                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+
+            <form method="POST" action="/add" class="modal-form">
+                <div class="field-group">
+                    <label for="description">Descricao</label>
+                    <input type="text" id="description" name="description" placeholder="Ex: Salario, Aluguel, Mercado..." required>
+                </div>
+
+                <div class="field-group">
+                    <label for="amount">Valor (R$)</label>
+                    <input type="number" id="amount" name="amount" step="0.01" min="0.01" placeholder="0,00" required>
+                </div>
+
+                <div class="field-group">
+                    <label>Tipo</label>
+                    <div class="type-selector">
+                        <div class="type-option">
+                            <input type="radio" id="type-ganho" name="type" value="ganho" checked>
+                            <label for="type-ganho" class="ganho-label">
+                                <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                                Ganho
+                            </label>
+                        </div>
+                        <div class="type-option">
+                            <input type="radio" id="type-gasto" name="type" value="gasto">
+                            <label for="type-gasto" class="gasto-label">
+                                <svg viewBox="0 0 24 24"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+                                Gasto
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn-submit">Adicionar lancamento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         Scripts
+         ========================================== -->
+    <script>
+        // Modal
+        function openModal() {
+            document.getElementById('modalOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => document.getElementById('description').focus(), 300);
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Sidebar mobile
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebarBackdrop').classList.toggle('active');
+            document.body.style.overflow = document.getElementById('sidebar').classList.contains('open') ? 'hidden' : '';
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarBackdrop').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Filtro de transacoes
+        function filterTransactions(type, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            document.querySelectorAll('.transactions-table tbody tr').forEach(row => {
+                if (type === 'todos' || row.dataset.type === type) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    </script>
+
 </body>
 </html>
