@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "chave-secreta"
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///finance.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root@localhost/gerenciador_financas"
 
 # Inicializar banco de dados e gerenciador de login
 db = SQLAlchemy(app)
@@ -14,19 +14,21 @@ login_manager.login_view = "login"
 
 # Modelo do usuário
 class User(UserMixin, db.Model):
-    """Representa um usuário no sistema"""
+    __tablename__ = "users"
+
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
 
+
 class Transaction(db.Model):
-    """Representa uma transação financeira do usuário"""
+    __tablename__ = "transactions"
+
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(120), nullable=False)
     amount = db.Column(db.Float, nullable=False)
-    type = db.Column(db.String(10), nullable=False)  # "ganho" ou "gasto"
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-
+    type = db.Column(db.String(10), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 @app.route("/add", methods=["POST"])
 @login_required
 def add_transaction():
